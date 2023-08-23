@@ -7,12 +7,11 @@
 
 (defn- define-object [define-method]
   (let [methods (atom {})]
-    (define-method (fn [op meth]
-                     (swap! methods assoc op meth)))
+    (define-method (fn [op meth] (swap! methods assoc op meth)))
     (fn self [op args]
       (let [meth (get @methods op)]
         (if (nil? meth)
-          (throw (NoSuchMethodException.))
+          (throw (NoSuchMethodException. (str op)))
           (apply meth args))))))
 
 (defmacro object [& body]
@@ -33,6 +32,7 @@
            (zzz (fn [a b]
                   (println "->" a b)))))
 (defn -main [& args]
+  (ttt obj 1 2)
   (ttt obj 1 2 3)
   (zzz obj "A" "B"))
 
