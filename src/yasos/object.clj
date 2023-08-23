@@ -1,10 +1,6 @@
 (ns yasos.object
   (:require [clojure.pprint :refer :all]))
 
-(defn operator []
-  (fn self [object & args]
-    (object self args)))
-
 (defn- define-object [define-method]
   (let [methods (atom {})]
     (define-method (fn [op meth] (swap! methods assoc op meth)))
@@ -13,6 +9,10 @@
         (if (nil? meth)
           (throw (NoSuchMethodException. (str op)))
           (apply meth args))))))
+
+(defmacro operator [name]
+  `(defn ~name [~'object & ~'args]
+     (~'object ~name ~'args)))
 
 (defmacro object [& body]
   (let [forms (map
@@ -24,8 +24,8 @@
 
 
 
-(def ttt (operator))
-(def zzz (operator))
+(operator ttt)
+(operator zzz)
 (def obj (object
            (ttt (fn
                   ([a b]
@@ -39,6 +39,7 @@
     (ttt (fn [x] (println prefix x)))))
 
 (defn -main [& args]
+  (println zzz)
   (ttt (cl "--->") "ZZZ")
   (ttt obj 1 2)
   (ttt obj 1 2 3)
