@@ -1,0 +1,8 @@
+{:paths
+ ["src"]
+ :deps
+ {}
+ :aliases {
+
+           }
+ }
