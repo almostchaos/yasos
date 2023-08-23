@@ -15,10 +15,10 @@
           (apply meth args))))))
 
 (defmacro object [& body]
-  (define-object (fn [method]
-                   (run!
-                     (fn [form] (method (eval (first form)) (eval (second form))))
-                     body))))
+  (let [forms (map
+                (fn [form] (list 'method (first form) (second form)))
+                body)]
+    `(define-object (fn [~'method] ~@forms))))
 
 
 
@@ -34,8 +34,14 @@
                    (println a b c))))
            (zzz (fn [a b]
                   (println "->" a b)))))
+(defn cl [prefix]
+  (object
+    (ttt (fn [x] (println prefix x)))))
+
 (defn -main [& args]
+  (ttt (cl "--->") "ZZZ")
   (ttt obj 1 2)
   (ttt obj 1 2 3)
-  (zzz obj "A" "B"))
+  (zzz obj "A" "B")
+  )
 
