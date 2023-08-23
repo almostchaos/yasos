@@ -27,8 +27,11 @@
 (def ttt (operator))
 (def zzz (operator))
 (def obj (object
-           (ttt (fn [a b c]
-                  (println a b c)))
+           (ttt (fn
+                  ([a b]
+                   (println a b "."))
+                  ([a b c]
+                   (println a b c))))
            (zzz (fn [a b]
                   (println "->" a b)))))
 (defn -main [& args]
