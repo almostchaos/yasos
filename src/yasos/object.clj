@@ -1,6 +1,4 @@
-(ns yasos.object
-  (:require [clojure.pprint :refer :all]
-            [clojure.string :refer [upper-case]]))
+(ns yasos.object)
 
 (defn define-object [define-method]
   (let [methods (atom {})]
@@ -21,12 +19,3 @@
 
 (defmacro method [op args & body]
   `(~'add-method ~op (fn ~args ~@body)))
-
-(operator ttt)
-(operator zzz)
-(def obj (object
-           (method ttt [a b c]
-             (println a b c)
-             (apply println (map upper-case [a b c])))
-           (method zzz [a b]
-             (println "->" a b))))

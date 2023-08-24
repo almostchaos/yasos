@@ -16,10 +16,10 @@
         server-instance (server)]
 
     (testing "initial state"
-      (is (= false (running? server-instance))))
+      (is (not (running? server-instance))))
     (testing "running state"
       (start server-instance)
       (is (running? server-instance)))
     (testing "stopped state"
       (stop server-instance)
-      (is (= false (running? server-instance))))))
+      (is (not (running? server-instance))))))
