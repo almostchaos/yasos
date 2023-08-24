@@ -1,9 +1,11 @@
 (ns yasos.object
-  (:require [clojure.pprint :refer :all]))
+  (:require [clojure.pprint :refer :all]
+            [clojure.string :refer [upper-case]]))
 
 (defn- define-object [define-method]
   (let [methods (atom {})]
-    (define-method (fn [op meth] (swap! methods assoc op meth)))
+    (define-method (fn [op meth]
+                     (swap! methods assoc op meth)))
     (fn self [op args]
       (let [meth (get @methods op)]
         (if (nil? meth)
@@ -15,34 +17,40 @@
      (~'object ~name ~'args)))
 
 (defmacro object [& body]
-  (let [forms (map
-                (fn [form] (list 'method (first form) (second form)))
-                body)]
-    `(define-object (fn [~'method] ~@forms))))
+  `(define-object (fn [~'add-method] ~@body)))
 
-
-
-
+(defmacro method [op args & body]
+  `(~'add-method ~op (fn ~args ~@body)))
 
 (operator ttt)
 (operator zzz)
 (def obj (object
-           (ttt (fn
-                  ([a b]
-                   (println a b "."))
-                  ([a b c]
-                   (println a b c))))
-           (zzz (fn [a b]
-                  (println "->" a b)))))
-(defn cl [prefix]
-  (object
-    (ttt (fn [x] (println prefix x)))))
+           (method ttt [a b c]
+             (println a b c)
+             (apply println (map upper-case [a b c])))
+           (method zzz [a b]
+             (println "->" a b))))
+
+(operator running?)
+(operator start)
+(operator stop)
+(defn test-server []
+  (let [running (atom false)]
+   (object
+     (method running? [] @running)
+     (method start [] (reset! running true))
+     (method stop [] (reset! running false)))))
 
 (defn -main [& args]
-  (println zzz)
-  (ttt (cl "--->") "ZZZ")
-  (ttt obj 1 2)
-  (ttt obj 1 2 3)
-  (zzz obj "A" "B")
-  )
+  (let [server (test-server)]
+    (println "running? " (running? server))
+    (println "starting...")
+    (start server)
+    (println "running? " (running? server))
+    (println "stopping...")
+    (stop server)
+    (println "running? " (running? server)))
+
+  (ttt obj "a" 2 3)
+  (zzz obj "A" "B"))
 
