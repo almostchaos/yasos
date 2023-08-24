@@ -2,7 +2,7 @@
   (:require [clojure.pprint :refer :all]
             [clojure.string :refer [upper-case]]))
 
-(defn- define-object [define-method]
+(defn define-object [define-method]
   (let [methods (atom {})]
     (define-method (fn [op meth]
                      (swap! methods assoc op meth)))
@@ -30,27 +30,3 @@
              (apply println (map upper-case [a b c])))
            (method zzz [a b]
              (println "->" a b))))
-
-(operator running?)
-(operator start)
-(operator stop)
-(defn test-server []
-  (let [running (atom false)]
-   (object
-     (method running? [] @running)
-     (method start [] (reset! running true))
-     (method stop [] (reset! running false)))))
-
-(defn -main [& args]
-  (let [server (test-server)]
-    (println "running? " (running? server))
-    (println "starting...")
-    (start server)
-    (println "running? " (running? server))
-    (println "stopping...")
-    (stop server)
-    (println "running? " (running? server)))
-
-  (ttt obj "a" 2 3)
-  (zzz obj "A" "B"))
-
