@@ -17,5 +17,7 @@
 (defmacro object [& body]
   `(define-object (fn [~'add-method] ~@body)))
 
-(defmacro method [op args & body]
-  `(~'add-method ~op (fn ~args ~@body)))
+(defmacro method [op & body]
+  (if (vector? (first body))
+    `(~'add-method ~op (fn ~(first body) ~@(rest body)))
+    `(~'add-method ~op (fn ~@body))))

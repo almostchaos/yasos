@@ -1,4 +1,4 @@
-(ns yasos.internal-state
+(ns yasos.tests
   (:require [clojure.test :refer :all]
             [yasos.object :refer :all]))
 
@@ -23,3 +23,14 @@
     (testing "stopped state"
       (stop server-instance)
       (is (not (running? server-instance))))))
+
+(operator alt)
+
+(deftest multi-arity
+  (let [obj (object
+              (method alt
+                ([a] a)
+                ([a b] (list a b))))]
+    (testing "multi-arity"
+      (is (= "a" (alt obj "a")))
+      (is (= '("a" "b") (alt obj "a" "b"))))))
