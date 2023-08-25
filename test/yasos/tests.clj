@@ -5,15 +5,15 @@
 (operator running?)
 (operator start)
 (operator stop)
+(defn server []
+  (let [running (atom false)]
+    (object
+      (method running? [] @running)
+      (method start [] (reset! running true))
+      (method stop [] (reset! running false)))))
 
 (deftest internal-state
-  (let [server (fn test-server []
-                 (let [running (atom false)]
-                   (object
-                     (method running? [] @running)
-                     (method start [] (reset! running true))
-                     (method stop [] (reset! running false)))))
-        server-instance (server)]
+  (let [server-instance (server)]
 
     (testing "initial state"
       (is (not (running? server-instance))))
