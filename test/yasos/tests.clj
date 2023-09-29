@@ -5,12 +5,16 @@
 (operator running?)
 (operator start)
 (operator stop)
+
 (defn server []
   (let [running (atom false)]
     (object
-      (method running? [] @running)
-      (method start [] (reset! running true))
-      (method stop [] (reset! running false)))))
+      (method running? []
+        @running)
+      (method start []
+        (reset! running true))
+      (method stop []
+        (reset! running false)))))
 
 (deftest internal-state
   (let [server-instance (server)]
@@ -34,3 +38,15 @@
     (testing "multi-arity"
       (is (= "a" (alt obj "a")))
       (is (= '("a" "b") (alt obj "a" "b"))))))
+
+(operator unknown)
+
+(deftest unknown-operator
+  (let [obj (object
+              (method running? [] true))]
+    (testing "missing method"
+      (try
+        (unknown obj)
+        (throw (Exception. "NoSuchMethodException was not thrown"))
+        (catch Exception e
+          (is (instance? NoSuchMethodException e)))))))
